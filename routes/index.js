@@ -3,6 +3,7 @@ var express = require('express');
 var app = express();
 var Busboy = require('busboy');
 var multer = require('multer')
+var mysql = require('mysql');
 var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
 var speech_to_text = new SpeechToTextV1({
     username: '1704b858-59b1-408b-b6e8-133935058cbb',
@@ -86,15 +87,49 @@ app.post('/function', function (req, res) {
                             console.log(JSON.stringify(transcript, null, 2));
                            var result =JSON.stringify(transcript, null, 2);
 
+
+
+
                                //  console.log(transcript.results[0].alternatives[0].transcript);
                            console.log("final text");
 
                           console.log(transcript.results[0].alternatives[0].transcript.toString());
 //                            console.log(transcript.results[1].alternatives[0].transcript.toString());
 
-                          var  stringresult = {msg: transcript.results[0].alternatives[0].transcript.toString()};
+                          var  stringresult = transcript.results[0].alternatives[0].transcript.toString();
 
-                            res.send(stringresult);
+
+                            var config = {
+                                host: 'mysql6001.site4now.net',
+                                user: 'a35176_fridge',
+                                password: 'login12345',
+                                database: 'db_a35176_fridge',
+                                multipleStatements: true
+
+                            }
+
+                            var connection = mysql.createConnection(config);
+                            var arr = stringresult.split(" ");
+
+                            var sqlstring ="select vegetablesphrase.itemid FROM vegetablesphrase WHERE vegetablesphrase.name LIKE '%"+arr[0]+"%'";
+
+                            connection.connect();
+
+                            for(var i=1;i<arr.length-1;i++) {
+                              sqlstring = sqlstring+" OR vegetablesphrase.name LIKE '%"+arr[i]+"%'";
+                            }
+
+                           console.log(sqlstring);
+
+                            connection.query(sqlstring,
+                                function (err,rows1,fields1) {
+                                    if(!err) {
+                                        var list = {msg: rows1}
+                                        res.send(list);
+                                    }else{}
+
+                                });
+
                         }
                     });
                 });
