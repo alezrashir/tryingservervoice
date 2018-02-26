@@ -3,8 +3,12 @@ var express = require('express');
 var app = express();
 var Busboy = require('busboy');
 var multer = require('multer')
-
-cloudconvert = new (require('cloudconvert'))('5NuswuAozpRdbnOP2xyTijteFhOOx9yZm4dkJDqMbWtLBDSQ7gIu7RofWKL5PaWg8pbB13OdpuEVOwao6EbmwQ');
+var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
+var speech_to_text = new SpeechToTextV1({
+    username: '1704b858-59b1-408b-b6e8-133935058cbb',
+    password: 'ERtjQIOZJ0VS'
+});
+cloudconvert = new (require('cloudconvert'))('xbXk2aWeBSPNEZJnS4kQ10JZTxi96fWWXIbXTXKBBNZwmv11zd4ZSGy8HmyItytFqR1ZOw_iE7JHl7M31vNoyQ');
 var result;
 var Client = require('ftp');
 
@@ -21,7 +25,8 @@ app.get('/function', function(req, res, next) {
     res.end('function');
 });
 app.post('/function', function (req, res) {
-  console.log('post shir');
+
+    console.log('post shir');
     var busboy = new Busboy({ headers: req.headers });
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
         console.log("In bus boy");
@@ -61,6 +66,38 @@ app.post('/function', function (req, res) {
                     console.error('Failed convert: ' + err);
                 }).on('finished', function (data) {
                     console.log('Done convert:!!!!!!!!!!!!!!!!! ' + data.message);
+
+                    c.get('/site1/output.mp3', function (err, stream) {
+                        if (err) throw err;
+
+
+                    var params = {
+                        audio: stream,
+                        content_type: 'audio/mp3',
+                        timestamps: true,
+                        word_alternatives_threshold: 0.9,
+                        keywords: ['tomatoes', 'tomato', 'tomatos', 'cucamber', 'cucumber', 'grapes'],
+                        keywords_threshold: 0.5
+                    };
+                    speech_to_text.recognize(params, function (error, transcript) {
+                        if (error)
+                            console.log('Error watson:', error);
+                        else {
+                            console.log(JSON.stringify(transcript, null, 2));
+                           var result =JSON.stringify(transcript, null, 2);
+
+                               //  console.log(transcript.results[0].alternatives[0].transcript);
+                           console.log("final text");
+
+                          console.log(transcript.results[0].alternatives[0].transcript.toString());
+//                            console.log(transcript.results[1].alternatives[0].transcript.toString());
+
+                          var  stringresult = {msg: transcript.results[0].alternatives[0].transcript.toString()};
+
+                            res.send(stringresult);
+                        }
+                    });
+                });
                     //  var f2 = this.pipe(fs.createWriteStream('./output.mp3'));
 
 
@@ -88,9 +125,10 @@ app.post('/function', function (req, res) {
 
 
 
-        res.send(result);
+
     });
     req.pipe(busboy);
+
 });
 
 
