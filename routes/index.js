@@ -129,6 +129,7 @@ app.post('/function', function (req, res) {
                                     }else{}
 
                                 });
+                            connection.end();
 
                         }
                     });
