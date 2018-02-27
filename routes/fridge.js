@@ -173,6 +173,44 @@ function (err,rows2,fields2) {
 
     });
         break;
+
+        case "insertalert":
+            connection.query("INSERT INTO alerts ( fridgeid , hour,alert) VALUES ('"+queryData.fridgeid+"', '"+queryData.hour+"', 'door open');",
+                function (err,rows1,fields1) {
+                    if(!err){
+                        var  alert= {msg: 'alert added'}
+                        res.send(alert);
+
+                    }
+
+                    else{
+                        var error = {msg: 'alert'}
+                        res.send(error);
+                    }
+
+                });
+            break;
+
+        case "getalert":
+            connection.query("SELECT * from alerts WHERE alerts.fridgeid = '"+queryData.fridgeid+"';",
+                function (err,rows1,fields1) {
+                    if(!err){
+                        var  alerts= {msg: rows1}
+                        res.send(alerts);
+
+                    }
+
+                    else{
+                        var error = {msg: 'alert'}
+                        res.send(error);
+                    }
+
+                });
+            break;
+
+
+
+
         case "getVegtable":
             connection.query("Select actualvegetables.weight , actualvegetables.purchase,items.imagepath FROM actualitems,actualvegetables,items where actualitems.fridgeid='"+queryData.fridgeid+"' and actualvegetables.fridgeid=actualitems.fridgeid and actualitems.itemid='"+queryData.itemid+"' and actualvegetables.itemid=actualitems.itemid and items.itemid=actualitems.itemid",
                 function (err,rows1,fields1) {
