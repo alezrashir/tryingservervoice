@@ -223,7 +223,7 @@ router.get('/', function(req, res, next) {
             break;
         case "getGroceries" :
 
-            var sql = "SELECT groceriesvegetables.itemid ,groceriesvegetables.amount from  groceriesvegetables  where groceriesvegetables.fridgeid='" + queryData.fridgeid + "' ;SELECT groceriesbarcodes.itemid,groceriesbarcodes.amount from groceriesbarcodes where groceriesbarcodes.fridgeid='" + queryData.fridgeid + "'";
+            var sql ="select (actualvegetables.weight-groceriesvegetables.amount) as now, actualvegetables.itemid ,groceriesvegetables.amount from actualvegetables,groceriesvegetables WHERE groceriesvegetables.itemid= actualvegetables.itemid and groceriesvegetables.fridgeid='"+queryData.fridgeid+"';select (actualbarkod.quantity-groceriesbarcodes.amount) as now, items.name as itemid,groceriesbarcodes.amount from actualbarkod,groceriesbarcodes,items WHERE groceriesbarcodes.itemid = actualbarkod.itemid and groceriesbarcodes.fridgeid='"+queryData.fridgeid+"' and items.itemid=groceriesbarcodes.itemid;";
 
             connection.query(sql, [2, 1], function (error, results, fields) {
                 if (error) {
