@@ -236,37 +236,32 @@ router.get('/', function(req, res, next) {
             break;
 
         case "insertGroceriesVegis" :
-            connection.query("insert into groceriesvegetables (fridgeid,itemid,amount) VALUES ('" + queryData.fridgeid + "' , '" + queryData.itemid + "' ," + queryData.amount + ")", function (err,rows1,fields1) {
-            if(!err){
-                var  Register= {msg: 'item added'}
-                res.send(Register);
 
-            }
+            var sql="insert into groceriesvegetables (fridgeid,itemid,amount) VALUES ('"+queryData.fridgeid+"' ,'"+queryData.itemid+"',"+queryData.amount+");select (actualvegetables.weight-groceriesvegetables.amount) as now, actualvegetables.itemid ,groceriesvegetables.amount from actualvegetables,groceriesvegetables WHERE groceriesvegetables.itemid='"+queryData.itemid+"' and groceriesvegetables.fridgeid='"+queryData.fridgeid+"' and groceriesvegetables.itemid=actualvegetables.itemid and groceriesvegetables.fridgeid=actualvegetables.fridgeid;";
+            connection.query(sql, [2, 1], function (error, results, fields) {
+                if (error) {
+                    throw error;
+                }
+                var h = {msg: results[1]};
 
-            else{
-                var error = {msg: 'item added'}
-                res.send(error);
-            }
+                res.send(h);
+            });
 
-        });
+
 
             break;
 
 
-
         case "insertGroceries" :
-            connection.query("insert into groceriesbarcodes (fridgeid,itemid,amount) VALUES ('" + queryData.fridgeid + "' , '" + queryData.itemid + "' ," + queryData.amount + ")", function (err,rows1,fields1) {
-                if(!err){
-                    var  Register= {msg: 'item added'}
-                    res.send(Register);
 
+            var sql="insert into groceriesbarcodes (fridgeid,itemid,amount) VALUES ('" + queryData.fridgeid + "' , '" + queryData.itemid + "' ," + queryData.amount + "); select (actualbarkod.quantity-groceriesbarcodes.amount) as now, items.name as itemid,groceriesbarcodes.amount from actualbarkod,groceriesbarcodes,items WHERE groceriesbarcodes.itemid = actualbarkod.itemid and groceriesbarcodes.fridgeid='"+queryData.fridgeid+"' and groceriesbarcodes.itemid='"+queryData.itemid+"' and items.itemid=groceriesbarcodes.itemid;";
+            connection.query(sql, [2, 1], function (error, results, fields) {
+                if (error) {
+                    throw error;
                 }
+                var h = {msg: results[1]};
 
-                else{
-                    var error = {msg: 'item added'}
-                    res.send(error);
-                }
-
+                res.send(h);
             });
 
             break;
