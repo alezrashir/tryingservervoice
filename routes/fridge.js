@@ -223,7 +223,7 @@ router.get('/', function(req, res, next) {
             break;
         case "getGroceries" :
 
-            var sql = "SELECT groceriesvegetables.itemid ,groceriesvegetables.weight from  groceriesvegetables  where groceriesvegetables.fridgeid='" + queryData.fridgeid + "' ;SELECT groceriesbarcodes.itemid,groceriesbarcodes.amount from groceriesbarcodes where groceriesbarcodes.fridgeid='" + queryData.fridgeid + "'";
+            var sql = "SELECT groceriesvegetables.itemid ,groceriesvegetables.amount from  groceriesvegetables  where groceriesvegetables.fridgeid='" + queryData.fridgeid + "' ;SELECT groceriesbarcodes.itemid,groceriesbarcodes.amount from groceriesbarcodes where groceriesbarcodes.fridgeid='" + queryData.fridgeid + "'";
 
             connection.query(sql, [2, 1], function (error, results, fields) {
                 if (error) {
@@ -236,7 +236,7 @@ router.get('/', function(req, res, next) {
             break;
 
         case "insertGroceriesVegis" :
-            connection.query("insert into groceriesvegetables (fridgeid,itemid,weight) VALUES ('" + queryData.fridgeid + "' , '" + queryData.itemid + "' ," + queryData.weight + ")", function (err,rows1,fields1) {
+            connection.query("insert into groceriesvegetables (fridgeid,itemid,amount) VALUES ('" + queryData.fridgeid + "' , '" + queryData.itemid + "' ," + queryData.amount + ")", function (err,rows1,fields1) {
             if(!err){
                 var  Register= {msg: 'item added'}
                 res.send(Register);
