@@ -6,10 +6,10 @@ router.get('/', function(req, res, next) {
     var queryData = url.parse(req.url, true).query;
     var mysql = require('mysql');
     var config = {
-         host: 'mysql6001.site4now.net',
-        user: 'a35176_fridge',
-        password: 'login12345',
-        database: 'db_a35176_fridge',
+         host: 'mysql5009.site4now.net',
+        user: 'a3e89d_shir',
+        password: 'shir12345',
+        database: 'db_a3e89d_shir',
 
     }
 
